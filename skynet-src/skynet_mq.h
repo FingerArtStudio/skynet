@@ -4,23 +4,29 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-struct skynet_message {
+struct skynet_message
+{
 	uint32_t source;
 	int session;
-	void * data;
+	void *data;
+	/*
+	sz: 指明消息体的大小，顺便把消息类型也会塞到sz里边，
+	用高八位（最高位一字节）来表示消息类型，结构如下：
+	type|size
+	*/
 	size_t sz;
 };
 
 // type is encoding in skynet_message.sz high 8bit
 #define MESSAGE_TYPE_MASK (SIZE_MAX >> 8)
-#define MESSAGE_TYPE_SHIFT ((sizeof(size_t)-1) * 8)
+#define MESSAGE_TYPE_SHIFT ((sizeof(size_t) - 1) * 8)
 
 struct message_queue;
 
-void skynet_globalmq_push(struct message_queue * queue);
-struct message_queue * skynet_globalmq_pop(void);
+void skynet_globalmq_push(struct message_queue *queue);
+struct message_queue *skynet_globalmq_pop(void);
 
-struct message_queue * skynet_mq_create(uint32_t handle);
+struct message_queue *skynet_mq_create(uint32_t handle);
 void skynet_mq_mark_release(struct message_queue *q);
 
 typedef void (*message_drop)(struct skynet_message *, void *);

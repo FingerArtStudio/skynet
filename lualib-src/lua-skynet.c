@@ -443,6 +443,9 @@ lpackstring(lua_State *L)
 	return 1;
 }
 
+/*
+倾倒垃圾，也就是释放内存
+*/
 static int
 ltrash(lua_State *L)
 {
